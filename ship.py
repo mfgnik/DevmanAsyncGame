@@ -37,28 +37,26 @@ def read_controls(canvas):
 
 
 async def animate_spaceship(canvas, row, column, frames):
-    last_frame = ''
-    canvas.nodelay(True)
-    last_row, last_column = (row, column)
+    prev_frame = ''
+    prev_row, prev_column = (row, column)
     rows_number, columns_number = canvas.getmaxyx()
 
     while True:
         for frame in frames:
-            draw_frame(canvas, last_row, last_column, last_frame, negative=True)
+            draw_frame(canvas, prev_row, prev_column, prev_frame, negative=True)
             draw_frame(canvas, row, column, frame)
 
-            last_frame = frame
-            last_row, last_column = (row, column)
-            frame_rows, frame_columns = get_frame_size(last_frame)
+            prev_frame = frame
+            prev_row, prev_column = (row, column)
+            frame_rows, frame_columns = get_frame_size(prev_frame)
 
             rows_direction, columns_direction, space_pressed = read_controls(canvas)
 
             row += rows_direction
             column += columns_direction
 
-            if  row < 0 or \
-                row + frame_rows > rows_number or \
-                column < 0 or \
-                column + frame_columns > columns_number:
-                row, column = (last_row, last_column)
+            if row < 0 or row + frame_rows > rows_number:
+                row = prev_row
+            if column < 0 or column + frame_columns > columns_number:
+                column = prev_column
             await asyncio.sleep(0)

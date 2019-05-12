@@ -12,13 +12,14 @@ TIC_TIMEOUT = 0.1
 
 def draw(canvas, stars_count):
     max_y, max_x = canvas.getmaxyx()
+    canvas.nodelay(True)
     rocket_frames = get_frames_from_files(('frame_1.txt', 'frame_2.txt'))
     coroutine_fire = fire(canvas, max_y / 2, max_x / 2, columns_speed=0)
     coroutine_ship = animate_spaceship(canvas, 20, 20, rocket_frames)
-    coroutines = [blink(canvas, randint(1, max_y - 1), randint(1, max_x - 1), choice('+*.:')) for _ in range(stars_count)]
+    coroutines = [blink(canvas, randint(1, max_y - 1), randint(1, max_x - 1), choice('+*.:'), randint(1, 5))
+                  for _ in range(stars_count)]
     coroutines.append(coroutine_fire)
     coroutines.append(coroutine_ship)
-    print(len(coroutines))
     canvas.border()
     curses.curs_set(False)
     while coroutines:
